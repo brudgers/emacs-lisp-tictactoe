@@ -1,10 +1,15 @@
-ticTacToe.el
-A program to play the game Tic Tac Toe.
-COPYRIGHT 2017 ben rudgers
-LICENSE GPL version 3 or later
+
+
+#+TITLE: tictactoe.org
+:PROPERTIES:
+:description: A program to play the game Tic Tac Toe.
+:copyright: COPYRIGHT 2017 ben rudgers
+:license: LICENSE GPL version 3 or later
+:END:
+
 * Introduction
 ** INSTRUCTIONS
-1.  Open this file in emacs
+1.  Open this file in Emacs
 2.  M-x ielm to start IELM
 3.  C-x b RET to return to source file
 4.  M-x eval-buffer to evaluate source file
@@ -17,7 +22,7 @@ LICENSE GPL version 3 or later
 11. (tictactoe-play) at ELISP> prompt to play game
 
 ** GAME DESIGN BACKGROUND
-Adpated from *Artificial Intelligence: A Modern Approach*, Russell
+Adapted from *Artificial Intelligence: A Modern Approach*, Russell
 and Norvig, 1995. [pages 123-124]
 
 A game consists of:
@@ -30,28 +35,45 @@ A game consists of:
 + A |Utility Function| which assigns a numeric value to each Terminal
   State of the game.
 
-INTERFACE DESIGN BACKGROUND
-Gameplay is displayed in a new buffer named "tictactoe", but
+** INTERFACE DESIGN BACKGROUND
+Game play is displayed in a new buffer named "tictactoe", but
 commands are entered via the mini-buffer in the IELM window.
 The overall exercise included learning a bit more about Emacs
-in general, and Emacs Lisp in particular. The implementaion
+in general, and Emacs Lisp in particular. The implementation
 reflects the fact that this is the first time trying to write
 code for (rather than in)  the Emacs environment
 and proves that "How hard could it be?"
 is not often a question that produces the expected answer.
-The tutorial: Emacs Lisp Animanation
+The tutorial: Emacs Lisp Animation
 http://dantorop.info/project/emacs-animation/ was invaluable.
 
-+  IMPORTS
-(require 'cl)
+* HEADER
+The output file defaults to =tictactoe.el=.
+#+NAME: header
+#+BEGIN_SRC emacs-lisp :exports code :tangle yes
+
+  ;;; Auto generated from tictactoe.org
+  ;;;
+  ;;; To generate a new copy: M-x org-babel-tangle
+
+#+END_SRC
+* IMPORTS
+During development, it was helpful to use some Common Lisp constructs. Over the long run, this practice might not be worth the confusion regarding documenation lookup. On the other hand, Common Lisp does provide some well documented and useful tools.
+
+#+NAME: requirements
+#+BEGIN_SRC emacs-lisp :exports code :tangle yes
+  (require 'cl)
+#+END_SRC
 
 * INITIAL STATE
+The initial state of the |Environment| is an empty board. Environment is a useful abstraction which I did not fully employ at the beginning of the exercise.
+
 ** Board
-#+NAME board-main
-#+BEGIN_SRC emacs-lisp
+#+NAME: board-main
+#+BEGIN_SRC emacs-lisp :exports code :tangle yes
 
   (defun make-empty-board ()
-    "Returns an empty tictactoe board.
+    "Returns an empty ticktacktoe board.
      Example: () -> (0 0 0 0 0 0 0 0 0)"
     (make-list board-size empty-square))
 
@@ -72,8 +94,8 @@ http://dantorop.info/project/emacs-animation/ was invaluable.
 Each square has a contents. A SQUARE contents is one of:
       empty-square | player-1-square | player-2-square.
 
-#+NAME square-contents
-#+BEGIN_SRC emacs-lisp
+#+NAME: square-contents
+#+BEGIN_SRC emacs-lisp :exports code :tangle yes
 
   (defconst empty-square 0
     "A zero value represents an empty (unmarked) square.")
@@ -88,8 +110,9 @@ Each square has a contents. A SQUARE contents is one of:
 
 ** Board Helpers
 These functions organize a board by rows, columns and diagonals to aid in the search for winning conditions.
-#+NAME board-helpers
-#+BEGIN_SRC emacs-lisp
+
+#+NAME: board-helpers
+#+BEGIN_SRC emacs-lisp :exports code :tangle yes
 
   (defun get-rows (board)
     "Returns a list of board rows represented as lists of their square's contents.
@@ -122,7 +145,7 @@ These functions organize a board by rows, columns and diagonals to aid in the se
            (nth 8 board))))
 
   (defun get-diagonals (board)
-    "Returns a list of board diagnonals represented as lists of their square's contents.
+    "Returns a list of board diagonals represented as lists of their square's contents.
   Board -> List(List : Squares)
      Example: (1 0 -1 0 1 -1 0 0 1) -> ((1 1 1)(-1 1 0))"
     (list
@@ -137,7 +160,7 @@ These functions organize a board by rows, columns and diagonals to aid in the se
 
 ** Players
 A PLAYER is one of player-1 | player-2.
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp :exports code :tangle yes
 
   (defconst player-1 #'(lambda (square) (= square player-1-square))
     "Player-1 is a function that returns true for squares marked by player-1")
@@ -153,8 +176,8 @@ drawn-game | player-1-wins | player-2-wins
 ** Player 1 or 2 wins
 One function covers both cases depending on which player is passed in.
 
-#+NAME player-wins
-#+BEGIN_SRC emacs-lisp
+#+NAME: player-wins
+#+BEGIN_SRC emacs-lisp :exports code :tangle yes
 
   (defun winner-p (player board)
     "Returns true if the player has won.
@@ -185,8 +208,8 @@ One function covers both cases depending on which player is passed in.
 ** Terminal State Draw
 This function is a fall-through from ~winner-p~. 
 
-#+NAME draw-state
-#+BEGIN_SRC emacs-lisp
+#+NAME: draw-state
+#+BEGIN_SRC emacs-lisp :exports code :tangle yes
   (defun all-squares-filled-p (board)
     "Utility Function. Returns true if no squares are empty.
      Board -> Boolean
@@ -195,9 +218,9 @@ This function is a fall-through from ~winner-p~.
 
 #+END_SRC
 
-** Terminal State Utility Functions
+** Terminal State Helpers
 
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp :exports code :tangle yes
   (defun map-player-squares (player get-squares board)
     "A utility function. Given a board representation, maps true to the squares marked by a player.
        Player (Board -> List(List : Squares)) Board ->  List(List : Boolean)
@@ -213,7 +236,7 @@ This function is a fall-through from ~winner-p~.
             (funcall get-squares board)))
 
   (defun winning-squares (map)
-    "A utility function. Given a mapping of true to a player's squares over a board representation returns true if there is a winning condtion.
+    "A utility function. Given a mapping of true to a player's squares over a board representation returns true if there is a winning condition.
       List(List : Boolean) -> List Boolean
     Example:
       (winning-squares '((t t t)(nil t nil))) -> t"
@@ -224,8 +247,8 @@ This function is a fall-through from ~winner-p~.
 
 * TERMINAL TEST
 
-#+NAME terminal-test
-#+BEGIN_SRC emacs-lisp
+#+NAME: terminal-test
+#+BEGIN_SRC emacs-lisp :exports code :tangle yes
 
   (defun game-over-p (board)
     "Example: (game-over-p '(1 0 -1 0 1 -1 0 0 1))) -> 'player-one-wins
@@ -239,8 +262,8 @@ This function is a fall-through from ~winner-p~.
 
 * OPERATORS
 
-#+NAME players-choose-squares
-#+BEGIN_SRC emacs-lisp
+#+NAME: players-choose-squares
+#+BEGIN_SRC emacs-lisp :exports code :tangle yes
 
   (defun player-1-choose-square (board)
     "Board -> Board"
@@ -266,8 +289,8 @@ This function is a fall-through from ~winner-p~.
 
 ** Operator Helpers
 
-#+NAME operator-helpers
-#+BEGIN_SRC emacs-lisp
+#+NAME: operator-helpers
+#+BEGIN_SRC emacs-lisp :exports code :tangle yes
 
   (defun find-empty-squares (board)
     "Utility function. Returns a list of indexes to a board's empty squares.
@@ -290,8 +313,8 @@ This function is a fall-through from ~winner-p~.
 ** Main Loop
 The main loop recurses and mutates a list. Copy semantics seemed like a bit of yak-shaving since the board only lives inside the loop. Philosophically, the idea that it is always the same board and the idea that it might be possible to cheat given enough effort and will also seem consistent with the idea of a game.
 
-#+NAME main-loop
-#+BEGIN_SRC emacs-lisp
+#+NAME: main-loop
+#+BEGIN_SRC emacs-lisp :exports code :tangle yes
 
   (defun tictactoe-main (board)
     (board->text board)
@@ -309,16 +332,16 @@ The main loop recurses and mutates a list. Copy semantics seemed like a bit of y
 
 ** Game Loop Helpers
 
-#+NAME setup-game
-#+BEGIN_SRC emacs-lisp
+#+NAME: setup-game
+#+BEGIN_SRC emacs-lisp :exports code :tangle yes
   (defun setup ()
     (get-buffer-create "tictactoe")
     (set-buffer "tictactoe"))
 
 #+END_SRC
 
-#+NAME start-game
-#+BEGIN_SRC emacs-lisp
+#+NAME: start-game
+#+BEGIN_SRC emacs-lisp :exports code :tangle yes
 
   (defun tictactoe-play ()
     (let ((game-outcome (tictactoe-main (make-empty-board))))
@@ -333,10 +356,9 @@ The main loop recurses and mutates a list. Copy semantics seemed like a bit of y
 
 #+END_SRC
 
-
 * USER INTERFACE
-#+NAME user-inteface
-#+BEGIN_SRC emacs-lisp
+#+NAME: user-inteface
+#+BEGIN_SRC emacs-lisp :exports code :tangle yes
 
   (defun square->text (square index)
     "Utility function. Converts a square to the correct text value."
@@ -377,8 +399,8 @@ The main loop recurses and mutates a list. Copy semantics seemed like a bit of y
 ** Simple Reflex Agent
 A simple reflex agent matches precepts (here a board) against a set of rules. This one uses a minimal search, so maybe it is not exactly a simple reflex agent. On the other hand, it is possible to see the search as a compression of all the states from which it is possible to win in a single move...i.e. code generation is the ultimate data compression. YMMV.
 
-#+NAME simple-reflex-agent
-#+BEGIN_SRC emacs-lisp
+#+NAME: simple-reflex-agent
+#+BEGIN_SRC emacs-lisp :exports code :tangle yes
 
   (defun ttt:simple-reflex-agent (board)
   "precept -> action
@@ -423,8 +445,8 @@ A simple reflex agent matches precepts (here a board) against a set of rules. Th
 ** Agent Helpers
 These helpers are generally useful to any agent for tictactoe.
 
-#+NAME agent-helpers
-#+BEGIN_SRC emacs-lisp
+#+NAME: agent-helpers
+#+BEGIN_SRC emacs-lisp :exports code :tangle yes
 
   (defun expand (board empty-squares player-square)
     (let ((new-board  (copy-list board)))
