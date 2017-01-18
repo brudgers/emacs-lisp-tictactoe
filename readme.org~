@@ -1,0 +1,12 @@
+* ticTacToe.el
+
+An implementation of TicTacToe (or Naughts and Crosses) in Emacs Lisp. It was written for the second round of interviews for the Spring 2017 batch at the Recuse Center. I was not admitted. My plan had been to work on 'classic' AI's at the agent level of abstraction. It uses a rule based agent to implement a primitive AI (but that's all the game really needs).
+
+* Playing
+The setup for the game is rather cumbersome. The instructions are in the initial comments for the file
+
+
+* Experience
+A big part of the exercise for me was learning more of Emacs. Challenges included adapting to Emacs Lisp from other Lisps and particularly Racket and learning how to perform input-output within the Emacs ecosystem.
+
+But for the instructions, the code was largely written from top to bottom as it appears in the file. The moments spent in the trough of despair appear toward the bottom.
