@@ -1,0 +1,791 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<title>tictactoe.org</title>
+<!-- 2017-01-18 Wed 18:01 -->
+<meta  http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta  name="generator" content="Org-mode" />
+<meta  name="author" content="benrudgers" />
+<style type="text/css">
+ <!--/*--><![CDATA[/*><!--*/
+  .title  { text-align: center; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { color: green; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #ccc;
+    box-shadow: 3px 3px 3px #eee;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: visible;
+    padding-top: 1.2em;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    background-color: white;
+    top: -10px;
+    right: 10px;
+    padding: 3px;
+    border: 1px solid black;
+  }
+  pre.src:hover:before { display: inline;}
+  pre.src-sh:before    { content: 'sh'; }
+  pre.src-bash:before  { content: 'sh'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-R:before     { content: 'R'; }
+  pre.src-perl:before  { content: 'Perl'; }
+  pre.src-java:before  { content: 'Java'; }
+  pre.src-sql:before   { content: 'SQL'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.right  { text-align: center;  }
+  th.left   { text-align: center;   }
+  th.center { text-align: center; }
+  td.right  { text-align: right;  }
+  td.left   { text-align: left;   }
+  td.center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara:nth-child(2) { display: inline; }
+  .footpara { display: block; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  /*]]>*/-->
+</style>
+<script type="text/javascript">
+/*
+@licstart  The following is the entire license notice for the
+JavaScript code in this tag.
+
+Copyright (C) 2012-2013 Free Software Foundation, Inc.
+
+The JavaScript code in this tag is free software: you can
+redistribute it and/or modify it under the terms of the GNU
+General Public License (GNU GPL) as published by the Free Software
+Foundation, either version 3 of the License, or (at your option)
+any later version.  The code is distributed WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+
+As additional permission under GNU GPL version 3 section 7, you
+may distribute non-source (e.g., minimized or compacted) forms of
+that code without the copy of the GNU GPL normally required by
+section 4, provided you include this license notice and a URL
+through which recipients can access the Corresponding Source.
+
+
+@licend  The above is the entire license notice
+for the JavaScript code in this tag.
+*/
+<!--/*--><![CDATA[/*><!--*/
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+/*]]>*///-->
+</script>
+</head>
+<body>
+<div id="content">
+<h1 class="title">tictactoe.org</h1>
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#sec-1">1. Introduction</a>
+<ul>
+<li><a href="#sec-1-1">1.1. INSTRUCTIONS</a></li>
+<li><a href="#sec-1-2">1.2. GAME DESIGN BACKGROUND</a></li>
+<li><a href="#sec-1-3">1.3. INTERFACE DESIGN BACKGROUND</a></li>
+</ul>
+</li>
+<li><a href="#sec-2">2. HEADER</a></li>
+<li><a href="#sec-3">3. IMPORTS</a></li>
+<li><a href="#sec-4">4. INITIAL STATE</a>
+<ul>
+<li><a href="#sec-4-1">4.1. Board</a></li>
+<li><a href="#sec-4-2">4.2. Square Contents</a></li>
+<li><a href="#sec-4-3">4.3. Board Helpers</a></li>
+<li><a href="#sec-4-4">4.4. Players</a></li>
+</ul>
+</li>
+<li><a href="#sec-5">5. TERMINAL STATES</a>
+<ul>
+<li><a href="#sec-5-1">5.1. Player 1 or 2 wins</a></li>
+<li><a href="#sec-5-2">5.2. Terminal State Draw</a></li>
+<li><a href="#sec-5-3">5.3. Terminal State Helpers</a></li>
+</ul>
+</li>
+<li><a href="#sec-6">6. TERMINAL TEST</a></li>
+<li><a href="#sec-7">7. OPERATORS</a>
+<ul>
+<li><a href="#sec-7-1">7.1. Operator Helpers</a></li>
+</ul>
+</li>
+<li><a href="#sec-8">8. GAME LOOP</a>
+<ul>
+<li><a href="#sec-8-1">8.1. Main Loop</a></li>
+<li><a href="#sec-8-2">8.2. Game Loop Helpers</a></li>
+</ul>
+</li>
+<li><a href="#sec-9">9. USER INTERFACE</a></li>
+<li><a href="#sec-10">10. AGENTS</a>
+<ul>
+<li><a href="#sec-10-1">10.1. Simple Reflex Agent</a></li>
+<li><a href="#sec-10-2">10.2. Agent Helpers</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-sec-1" class="outline-2">
+<h2 id="sec-1"><span class="section-number-2">1</span> Introduction</h2>
+<div class="outline-text-2" id="text-1">
+</div><div id="outline-container-sec-1-1" class="outline-3">
+<h3 id="sec-1-1"><span class="section-number-3">1.1</span> INSTRUCTIONS</h3>
+<div class="outline-text-3" id="text-1-1">
+<ol class="org-ol">
+<li>Open this file in Emacs
+</li>
+<li>M-x ielm to start IELM
+</li>
+<li>C-x b RET to return to source file
+</li>
+<li>M-x eval-buffer to evaluate source file
+</li>
+<li>C-x 3 to split windows
+</li>
+<li>C-x b RET to put IELM in window
+</li>
+<li>(setup) at the ELISP&gt; prompt
+</li>
+<li>C-x o to return to the code window
+</li>
+<li>C-x b tictactoe to bring up the display window
+</li>
+<li>C-x o to return to the IELM window
+</li>
+<li>(tictactoe-play) at ELISP&gt; prompt to play game
+</li>
+</ol>
+</div>
+</div>
+
+<div id="outline-container-sec-1-2" class="outline-3">
+<h3 id="sec-1-2"><span class="section-number-3">1.2</span> GAME DESIGN BACKGROUND</h3>
+<div class="outline-text-3" id="text-1-2">
+<p>
+Adapted from <b>Artificial Intelligence: A Modern Approach</b>, Russell
+and Norvig, 1995. [pages 123-124]
+</p>
+
+<p>
+A game consists of:
+</p>
+
+<ul class="org-ul">
+<li>|Initial State| which consists of a board position and an indication
+of whose move it is.
+</li>
+<li>A set of |Terminal States|.
+</li>
+<li>A set of |Operators| which define the legal moves a player can make.
+</li>
+<li>A |Terminal Test| which determines when the game is over.
+</li>
+<li>A |Utility Function| which assigns a numeric value to each Terminal
+State of the game.
+</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-sec-1-3" class="outline-3">
+<h3 id="sec-1-3"><span class="section-number-3">1.3</span> INTERFACE DESIGN BACKGROUND</h3>
+<div class="outline-text-3" id="text-1-3">
+<p>
+Game play is displayed in a new buffer named "tictactoe", but
+commands are entered via the mini-buffer in the IELM window.
+The overall exercise included learning a bit more about Emacs
+in general, and Emacs Lisp in particular. The implementation
+reflects the fact that this is the first time trying to write
+code for (rather than in)  the Emacs environment
+and proves that "How hard could it be?"
+is not often a question that produces the expected answer.
+The tutorial: Emacs Lisp Animation
+<a href="http://dantorop.info/project/emacs-animation/">http://dantorop.info/project/emacs-animation/</a> was invaluable.
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-2" class="outline-2">
+<h2 id="sec-2"><span class="section-number-2">2</span> HEADER</h2>
+<div class="outline-text-2" id="text-2">
+<p>
+The output file defaults to <code>tictactoe.el</code>.
+</p>
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp" id="header">;;; Auto generated from tictactoe.org
+;;;
+;;; To generate a new copy: M-x org-babel-tangle
+</pre>
+</div>
+</div>
+</div>
+<div id="outline-container-sec-3" class="outline-2">
+<h2 id="sec-3"><span class="section-number-2">3</span> IMPORTS</h2>
+<div class="outline-text-2" id="text-3">
+<p>
+During development, it was helpful to use some Common Lisp constructs. Over the long run, this practice might not be worth the confusion regarding documenation lookup. On the other hand, Common Lisp does provide some well documented and useful tools.
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp" id="requirements">(require 'cl)
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-4" class="outline-2">
+<h2 id="sec-4"><span class="section-number-2">4</span> INITIAL STATE</h2>
+<div class="outline-text-2" id="text-4">
+<p>
+The initial state of the |Environment| is an empty board. Environment is a useful abstraction which I did not fully employ at the beginning of the exercise.
+</p>
+</div>
+
+<div id="outline-container-sec-4-1" class="outline-3">
+<h3 id="sec-4-1"><span class="section-number-3">4.1</span> Board</h3>
+<div class="outline-text-3" id="text-4-1">
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp" id="board-main">(defun make-empty-board ()
+  "Returns an empty ticktacktoe board.
+   Example: () -&gt; (0 0 0 0 0 0 0 0 0)"
+  (make-list board-size empty-square))
+
+(defconst board-size 9
+  "A BOARD consists of 9 squares. 
+   A board's squares are arranged in a 3x3 grid.
+
+   0 | 1 | 2 
+  -----------
+   3 | 4 | 5 
+  -----------
+   6 | 7 | 8 ")
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-4-2" class="outline-3">
+<h3 id="sec-4-2"><span class="section-number-3">4.2</span> Square Contents</h3>
+<div class="outline-text-3" id="text-4-2">
+<p>
+Each square has a contents. A SQUARE contents is one of:
+      empty-square | player-1-square | player-2-square.
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp" id="square-contents">(defconst empty-square 0
+  "A zero value represents an empty (unmarked) square.")
+
+(defconst player-1-square 1
+  "The value 1 represents a square marked by player-1.")
+
+(defconst player-2-square -1
+  "The value -1 represents a square marked by player-2")
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-4-3" class="outline-3">
+<h3 id="sec-4-3"><span class="section-number-3">4.3</span> Board Helpers</h3>
+<div class="outline-text-3" id="text-4-3">
+<p>
+These functions organize a board by rows, columns and diagonals to aid in the search for winning conditions.
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp" id="board-helpers">(defun get-rows (board)
+  "Returns a list of board rows represented as lists of their square's contents.
+Board -&gt; List(List : Squares)
+   Example: (1 0 -1 0 1 -1 0 0 1) -&gt; ((1 0 -1)(0 1 -1)(0 0 1))"
+  (list
+   (list (nth 0 board)
+         (nth 1 board)
+         (nth 2 board))
+   (list (nth 3 board)
+         (nth 4 board)
+         (nth 5 board))
+   (list (nth 6 board)
+         (nth 7 board)
+         (nth 8 board))))
+
+(defun get-columns (board)
+  "Returns a list of board columns represented as lists of their square's contents.
+Board -&gt; List(List : Squares)
+   Example: (1 0 -1 0 1 -1 0 0 1) -&gt; ((1 0 0)(0 1 0)(-1 -1 1))"
+  (list
+   (list (nth 0 board)
+         (nth 3 board)
+         (nth 6 board))
+   (list (nth 1 board)
+         (nth 4 board)
+         (nth 7 board))
+   (list (nth 2 board)
+         (nth 5 board)
+         (nth 8 board))))
+
+(defun get-diagonals (board)
+  "Returns a list of board diagonals represented as lists of their square's contents.
+Board -&gt; List(List : Squares)
+   Example: (1 0 -1 0 1 -1 0 0 1) -&gt; ((1 1 1)(-1 1 0))"
+  (list
+   (list (nth 0 board)
+         (nth 4 board)
+         (nth 8 board))
+   (list (nth 2 board)
+         (nth 4 board)
+         (nth 6 board))))
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-4-4" class="outline-3">
+<h3 id="sec-4-4"><span class="section-number-3">4.4</span> Players</h3>
+<div class="outline-text-3" id="text-4-4">
+<p>
+A PLAYER is one of player-1 | player-2.
+</p>
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp">(defconst player-1 #'(lambda (square) (= square player-1-square))
+  "Player-1 is a function that returns true for squares marked by player-1")
+
+(defconst player-2 #'(lambda (square) (= square player-2-square))
+  "Player-1 is a function that returns true for squares marked by player-2")
+</pre>
+</div>
+</div>
+</div>
+</div>
+<div id="outline-container-sec-5" class="outline-2">
+<h2 id="sec-5"><span class="section-number-2">5</span> TERMINAL STATES</h2>
+<div class="outline-text-2" id="text-5">
+<p>
+A finished game is one of:
+drawn-game | player-1-wins | player-2-wins
+</p>
+</div>
+
+<div id="outline-container-sec-5-1" class="outline-3">
+<h3 id="sec-5-1"><span class="section-number-3">5.1</span> Player 1 or 2 wins</h3>
+<div class="outline-text-3" id="text-5-1">
+<p>
+One function covers both cases depending on which player is passed in.
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp" id="player-wins">(defun winner-p (player board)
+  "Returns true if the player has won.
+   Player Board -&gt; Boolean
+   Example: (winner-p player-1 '(1 0 -1 0 1 -1 0 0 1)) -&gt; t"
+  (let
+      ((rows
+        (map-player-squares player
+                            #'get-rows
+                            board))
+       (columns
+        (map-player-squares player
+                            #'get-columns
+                            board))
+       (diagonals
+        (map-player-squares player
+                            #'get-diagonals
+                            board)))
+    (or (some #'identity
+              (winning-squares rows))
+        (some #'identity
+              (winning-squares columns))
+        (some #'identity
+              (winning-squares diagonals)))))
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-5-2" class="outline-3">
+<h3 id="sec-5-2"><span class="section-number-3">5.2</span> Terminal State Draw</h3>
+<div class="outline-text-3" id="text-5-2">
+<p>
+This function is a fall-through from <code>winner-p</code>. 
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp" id="draw-state">(defun all-squares-filled-p (board)
+  "Utility Function. Returns true if no squares are empty.
+   Board -&gt; Boolean
+   Example: (all-squares-filled-p '(1 0 -1 0 1 -1 0 0 1))) -&gt; nil"
+  (not (some #'zerop board)))
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-5-3" class="outline-3">
+<h3 id="sec-5-3"><span class="section-number-3">5.3</span> Terminal State Helpers</h3>
+<div class="outline-text-3" id="text-5-3">
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp">(defun map-player-squares (player get-squares board)
+  "A utility function. Given a board representation, maps true to the squares marked by a player.
+     Player (Board -&gt; List(List : Squares)) Board -&gt;  List(List : Boolean)
+  Example: 
+     (map-player-squares player-1 
+                         #'get-diagonals 
+                        '(1 0 -1 0 1 -1 0 0 1)) 
+     -&gt; ((t t t)
+         (nil t nil))
+"
+  (mapcar #'(lambda (x)
+              (mapcar player x))
+          (funcall get-squares board)))
+
+(defun winning-squares (map)
+  "A utility function. Given a mapping of true to a player's squares over a board representation returns true if there is a winning condition.
+    List(List : Boolean) -&gt; List Boolean
+  Example:
+    (winning-squares '((t t t)(nil t nil))) -&gt; t"
+  (mapcar #'(lambda (list)
+              (every #'identity list))map))
+</pre>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-6" class="outline-2">
+<h2 id="sec-6"><span class="section-number-2">6</span> TERMINAL TEST</h2>
+<div class="outline-text-2" id="text-6">
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp" id="terminal-test">(defun game-over-p (board)
+  "Example: (game-over-p '(1 0 -1 0 1 -1 0 0 1))) -&gt; 'player-one-wins
+   Example: (game-over-p (make-empty-board)) -&gt; nil"
+  (cond
+   ((winner-p player-1 board) 'player-1-wins)
+   ((winner-p player-2 board) 'player-2-wins)
+   ((all-squares-filled-p board) 'draw)))
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-7" class="outline-2">
+<h2 id="sec-7"><span class="section-number-2">7</span> OPERATORS</h2>
+<div class="outline-text-2" id="text-7">
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp" id="players-choose-squares">(defun player-1-choose-square (board)
+  "Board -&gt; Board"
+  (insert "Status: It is Player-1's turn\n")
+  (let* ((empty-squares (find-empty-squares board))
+         (message (concat "Player-1 choose square: "
+                          (prin1-to-string empty-squares)
+                          " : "))
+         (choice (read-string message)))
+    (setf (nth (read choice) board) player-1-square))
+  board)
+
+(defun player-2-choose-square (board)
+  "Board -&gt; Board"
+  (insert "Status: It is Player-2's turn\n")
+  (let ((empty-squares (find-empty-squares board)))
+    (setf
+     (nth (ttt:simple-reflex-agent board) board)
+     player-2-square))
+  board)
+</pre>
+</div>
+</div>
+
+<div id="outline-container-sec-7-1" class="outline-3">
+<h3 id="sec-7-1"><span class="section-number-3">7.1</span> Operator Helpers</h3>
+<div class="outline-text-3" id="text-7-1">
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp" id="operator-helpers">(defun find-empty-squares (board)
+  "Utility function. Returns a list of indexes to a board's empty squares.
+   Board -&gt; List:number[0-8]
+   Example: (find-empty-squares (make-empty-board))
+            -&gt; (0 1 2 3 4 5 6 7 8)
+   Example: (find-empty-squares '(1 0 -1 0 1 -1 0 0 1)
+            -&gt; (1 3 6 7)"
+  (let ((i 0)
+        (acc))
+    (dolist (element board acc)
+      (if (= 0 (nth i board))
+          (push i acc))
+      (setq i (+ i 1)))
+    (reverse acc)))
+</pre>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-8" class="outline-2">
+<h2 id="sec-8"><span class="section-number-2">8</span> GAME LOOP</h2>
+<div class="outline-text-2" id="text-8">
+</div><div id="outline-container-sec-8-1" class="outline-3">
+<h3 id="sec-8-1"><span class="section-number-3">8.1</span> Main Loop</h3>
+<div class="outline-text-3" id="text-8-1">
+<p>
+The main loop recurses and mutates a list. Copy semantics seemed like a bit of yak-shaving since the board only lives inside the loop. Philosophically, the idea that it is always the same board and the idea that it might be possible to cheat given enough effort and will also seem consistent with the idea of a game.
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp" id="main-loop">(defun tictactoe-main (board)
+  (board-&gt;text board)
+  (if (game-over-p board)
+      (game-over-p board)
+    (let
+        ((board-sum (apply #'+ board)))
+      (cond
+       ((= board-sum 0)
+        (tictactoe-main (player-1-choose-square board)))
+       ((= board-sum 1)
+        (tictactoe-main (player-2-choose-square board)))))))
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-8-2" class="outline-3">
+<h3 id="sec-8-2"><span class="section-number-3">8.2</span> Game Loop Helpers</h3>
+<div class="outline-text-3" id="text-8-2">
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp" id="setup-game">(defun setup ()
+  (get-buffer-create "tictactoe")
+  (set-buffer "tictactoe"))
+</pre>
+</div>
+
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp" id="start-game">(defun tictactoe-play ()
+  (let ((game-outcome (tictactoe-main (make-empty-board))))
+    (cond
+     ((eq game-outcome 'player-1-wins)
+      (insert "Game Over: Player-1 Wins"))
+     ((eq game-outcome 'player-2-wins)
+      (insert "Game Over: Player-2 Wins"))
+     ((eq game-outcome 'draw)
+      (insert "Game Over: It is a draw")))
+    game-outcome))
+</pre>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-9" class="outline-2">
+<h2 id="sec-9"><span class="section-number-2">9</span> USER INTERFACE</h2>
+<div class="outline-text-2" id="text-9">
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp" id="user-inteface">(defun square-&gt;text (square index)
+  "Utility function. Converts a square to the correct text value."
+  (cond
+   ((eq square -1) " o ")
+   ((eq square 1)  " x ")
+   (t (concat " " (prin1-to-string index) " "))))
+
+(defun row-&gt;text (row i)
+  "Utility function. Converts board row to its text representation"
+  (concat
+   (square-&gt;text (nth 0 row) i)
+   "|"
+   (square-&gt;text (nth 1 row) (+ i 1))
+   "|"
+   (square-&gt;text (nth 2 row) (+ i 2))))
+
+(defun board-&gt;text (board)
+  "Utility function. Converts a board to its text representation."
+  (let* ((brd (get-rows board))
+         (separator "\n-----------\n")
+         (row1 (row-&gt;text (nth 0 brd) 0))
+         (row2 (row-&gt;text (nth 1 brd) 3))
+         (row3 (row-&gt;text (nth 2 brd) 6)))
+    (erase-buffer)
+    (insert "Playing TicTacToe\n\n")
+    (insert row1)
+    (insert separator)
+    (insert row2)
+    (insert separator)
+    (insert row3)
+    (insert "\n\n")))
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-10" class="outline-2">
+<h2 id="sec-10"><span class="section-number-2">10</span> AGENTS</h2>
+<div class="outline-text-2" id="text-10">
+</div><div id="outline-container-sec-10-1" class="outline-3">
+<h3 id="sec-10-1"><span class="section-number-3">10.1</span> Simple Reflex Agent</h3>
+<div class="outline-text-3" id="text-10-1">
+<p>
+A simple reflex agent matches precepts (here a board) against a set of rules. This one uses a minimal search, so maybe it is not exactly a simple reflex agent. On the other hand, it is possible to see the search as a compression of all the states from which it is possible to win in a single move&#x2026;i.e. code generation is the ultimate data compression. YMMV.
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp" id="simple-reflex-agent">(defun ttt:simple-reflex-agent (board)
+"precept -&gt; action
+ A precept is a board.
+ An action is the label of a square.
+ The agent prefers winning squares over other squares.
+ The agent prefers blocking squares over other squares. 
+ The agent prefers the center square over other squares.
+ The agent prefers corner squares over other squares."
+  (let* ((precept (find-empty-squares board))
+         (*player* player-2)
+         (*other-player* player-1)
+         (*player-square* player-2-square)
+         (*other-player-square* player-1-square)
+         (expansion (expand board precept *player-square*))
+         (winner (find-winner expansion precept *player*))
+         (center 4)
+         (corner0 0)
+         (corner2 2)
+         (corner6 6)
+         (corner8 8))
+    (if winner
+        winner
+      (let*
+          ((other-expansion (expand board
+                                    precept
+                                    *other-player-square*))
+           (block (find-winner other-expansion
+                               precept
+                               *other-player*)))
+        (cond
+         (block block)
+         ((memq center precept) center)
+         ((memq corner0 precept) corner0)
+         ((memq corner2 precept) corner2)
+         ((memq corner6 precept) corner6)
+         ((memq corner8 precept) corner8)
+         (t (first precept)))))))
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-10-2" class="outline-3">
+<h3 id="sec-10-2"><span class="section-number-3">10.2</span> Agent Helpers</h3>
+<div class="outline-text-3" id="text-10-2">
+<p>
+These helpers are generally useful to any agent for tictactoe.
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp" id="agent-helpers">(defun expand (board empty-squares player-square)
+  (let ((new-board  (copy-list board)))
+    (cond
+     ((null empty-squares) nil)
+     (t (setf (nth (first empty-squares) new-board)
+              player-square)
+        (cons  new-board
+               (expand board
+                       (rest empty-squares)
+                       player-square))))))
+
+(defun find-winner (expansion empty-squares player)
+  (cond
+   ((null expansion) nil)
+   ((winner-p player (first expansion))
+    (first empty-squares))
+   (t (find-winner (rest expansion)
+                   (rest empty-squares)
+                   player))))
+</pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p class="author">Author: benrudgers</p>
+<p class="date">Created: 2017-01-18 Wed 18:01</p>
+<p class="creator"><a href="http://www.gnu.org/software/emacs/">Emacs</a> 24.5.1 (<a href="http://orgmode.org">Org</a> mode 8.2.10)</p>
+<p class="validation"><a href="http://validator.w3.org/check?uri=referer">Validate</a></p>
+</div>
+</body>
+</html>
