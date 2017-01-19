@@ -1,5 +1,7 @@
 * ticTacToe.el
 
+This site has a web page: https://brudgers.github.io/emacs-lisp-tictactoe/
+
 An implementation of TicTacToe (or Naughts and Crosses) in Emacs Lisp. It was written for the second round of interviews for the Spring 2017 batch at the Recuse Center. I was not admitted. My plan had been to work on 'classic' AI's at the agent level of abstraction. It uses a rule based agent to implement a primitive AI (but that's all the game really needs).
 
 * Playing
