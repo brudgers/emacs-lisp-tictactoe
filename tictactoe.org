@@ -6,8 +6,13 @@
 :copyright: COPYRIGHT 2017 ben rudgers
 :license: LICENSE GPL version 3 or later
 :END:
+* PREFACE
+Originally, this code was developed as part of the interview process for the Spring 2017 batch at the Recurse Center. The [[[[https://gist.github.com/brudgers/3f464e36e3c7ef142ec13effbb4f378b]]]] [original Gist].
 
-* Introduction
+My 'what will you work on' proposal was to work through Norvig's *Paradigms of Artificial Intelligence: case studies in Common Lisp* with the goal of learning 'classic' AI at the agent level (in contrast to studying lower abstraction layer implementation mechanisms such as deep neural networks). TicTacToe seemed to fit into that program of study more thouroughly than the other alternatives, i.e. the interview part of the exercise was to pair program on addding a feature so that the program could play.
+
+Emacs (alongside JavaScript and Linux) has been a specific focus for my technical interest since the beginning of 2016. Emacs Lisp was chosen as the implemenation language as part of that ongoing project and with an eye toward the possibility that via Emacs Lisp, Emacs might make a good prototyping environment for 'classic' AI agents given the relationship of 'classic' AI to Lisp.
+* INTRODUCTION
 ** INSTRUCTIONS
 1.  Open this file in Emacs
 2.  M-x ielm to start IELM
@@ -268,21 +273,14 @@ This function is a fall-through from ~winner-p~.
   (defun player-1-choose-square (board)
     "Board -> Board"
     (insert "Status: It is Player-1's turn\n")
-    (let* ((empty-squares (find-empty-squares board))
-           (message (concat "Player-1 choose square: "
-                            (prin1-to-string empty-squares)
-                            " : "))
-           (choice (read-string message)))
-      (setf (nth (read choice) board) player-1-square))
+    (setf (nth (ttt:human-agent board) board) player-1-square)
     board)
 
   (defun player-2-choose-square (board)
     "Board -> Board"
     (insert "Status: It is Player-2's turn\n")
-    (let ((empty-squares (find-empty-squares board)))
-      (setf
-       (nth (ttt:simple-reflex-agent board) board)
-       player-2-square))
+    (setf (nth (ttt:simple-reflex-agent board) board)
+          player-2-square)
     board)
 
 #+END_SRC
@@ -395,6 +393,66 @@ The main loop recurses and mutates a list. Copy semantics seemed like a bit of y
 #+END_SRC
 
 * AGENTS
+The early versions of the program had players (the business logic abstraction) but not agents (an AI/computational abstraction). I knew I wanted the agent abstraction, but I was trying not to get 'ahead of myself.' Mostly this was a fairly conservative  (and more literal) interpretation of the Recurse Center advice not to create a solution to the pair programming portion of the exercise upfront. The reason for the advice was that people got less out of the pair programming exercise. I suspect that it was an over interpretation on my part. On the other hand, I was actively trying to avoid the Lisp version of 'factory factory player factor'...there's a point where nested abstractions stand in the way of getting things done and I was striving for completion in a week.
+ 
+** Human Agent
+The early (embedded) version of this code used ~(read choice)~ which creates a "drop tables and launch the missiles" type vulnerability. It was a quick and dirty way to handle the problem while figuring out how to Rube Goldberg some sort of IO.
+ 
+#+TODO: A ~try...catch~  block around string-to-number would create a more robust call.
+#+NAME: human-agent
+#+BEGIN_SRC emacs-lisp :exports code :tangle yes
+
+  (defun ttt:human-agent (precept)
+  "Precept -> Action
+  A precept is a board. An Action is a square."
+      (let*
+          ((empty-squares (find-empty-squares precept))
+           (message (concat "Player-1 choose square: "
+                            (prin1-to-string empty-squares)
+                            " : "))
+           (choice (read-string message))))
+      (string-to-number choice))
+
+#+END_SRC
+
+** Greedy Agent
+When the underlying game logic of Initial State, Terminal State, and Terminal Test was defined, the challenge in developing the Operators was the human interface for the players. To simplify development, I worked on human interaction via Player-1 and had Player-2 automatically pick the first square from the list of empty squares. I've come to think of this as a 'Greedy' approach. A 'greedy' decision forms the final element of the Simple Reflex Agent.
+
+#+NAME: greedy-agent
+#+BEGIN_SRC emacs-lisp :exports code :tangle yes
+
+  (defun ttt:greedy-agent (precept)
+  "Precept -> Action
+  A precept is a board. An Action is a square."
+      (let*
+          ((empty-squares (find-empty-squares precept)))
+        (first empty-squares)))
+
+#+END_SRC
+
+** Random Agent 
+The Gist I submitted for the interview contained the equivalent of the human agent for both players. At the beginning of the pair session, my suggestion was to first automate one player and then to consider performance. The decision to select a square at random is interesting in regard to agency. I think it boils down to the notion of a precept. An agent makes a decision that is determined by the structure of the precept and an agent that chooses at random seems to be ignoring the structure.
+
+Random selection has a role in computer science but that role seems to be selecting inputs to algorithms (e.g. monte-carlo simulation). In this game, the selection of random-agent is an action on the enviroment but does not fully determine the environment's state from the standpoint of the random-agent: the other player also determines the state.
+
+Thinking about the difference between the greedy-agent and the random-agent, a person or machine could find a pattern in the greedy-agent responses and infer an underlying decision process. There is (pseudo-random-number generation aside) no pattern produced by the random-agent and it is hard to see agency in a mechanism that acts randomly. I think it is akin to McCarthy's remarks about thermostats having beliefs. 
+
+#+BEGIN_QUOTE
+Machines as simple as thermostats can be said to have beliefs, and having beliefs seems to be a characteristic of most machines capable of problem solving performance. --John McCarthy 
+#+END_QUOTE
+
+
+#+NAME: random-agent
+#+BEGIN_SRC emacs-lisp :exports code :tangle yes
+
+  (defun ttt:random-agent (precept)
+  "Precept -> Action
+  A precept is a board. An Action is a square."
+      (let*
+          ((empty-squares (find-empty-squares precept)))
+        (nth (random (length empty-squares) empty-squares))))
+
+#+END_SRC
 
 ** Simple Reflex Agent
 A simple reflex agent matches precepts (here a board) against a set of rules. This one uses a minimal search, so maybe it is not exactly a simple reflex agent. On the other hand, it is possible to see the search as a compression of all the states from which it is possible to win in a single move...i.e. code generation is the ultimate data compression. YMMV.
@@ -402,7 +460,7 @@ A simple reflex agent matches precepts (here a board) against a set of rules. Th
 #+NAME: simple-reflex-agent
 #+BEGIN_SRC emacs-lisp :exports code :tangle yes
 
-  (defun ttt:simple-reflex-agent (board)
+  (defun ttt:simple-reflex-agent (precept)
   "precept -> action
    A precept is a board.
    An action is the label of a square.
@@ -410,13 +468,13 @@ A simple reflex agent matches precepts (here a board) against a set of rules. Th
    The agent prefers blocking squares over other squares. 
    The agent prefers the center square over other squares.
    The agent prefers corner squares over other squares."
-    (let* ((precept (find-empty-squares board))
+    (let* ((options (find-empty-squares precept))
            (*player* player-2)
            (*other-player* player-1)
            (*player-square* player-2-square)
            (*other-player-square* player-1-square)
-           (expansion (expand board precept *player-square*))
-           (winner (find-winner expansion precept *player*))
+           (expansion (expand precept options *player-square*))
+           (winner (find-winner expansion options *player*))
            (center 4)
            (corner0 0)
            (corner2 2)
@@ -425,20 +483,20 @@ A simple reflex agent matches precepts (here a board) against a set of rules. Th
       (if winner
           winner
         (let*
-            ((other-expansion (expand board
-                                      precept
+            ((other-expansion (expand precept
+                                      options
                                       ,*other-player-square*))
              (block (find-winner other-expansion
-                                 precept
+                                 options
                                  ,*other-player*)))
           (cond
            (block block)
-           ((memq center precept) center)
-           ((memq corner0 precept) corner0)
-           ((memq corner2 precept) corner2)
-           ((memq corner6 precept) corner6)
-           ((memq corner8 precept) corner8)
-           (t (first precept)))))))
+           ((memq center options) center)
+           ((memq corner0 options) corner0)
+           ((memq corner2 options) corner2)
+           ((memq corner6 options) corner6)
+           ((memq corner8 options) corner8)
+           (t (first options)))))))
 
 #+END_SRC
 
