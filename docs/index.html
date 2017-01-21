@@ -4,7 +4,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
 <title>tictactoe.org</title>
-<!-- 2017-01-21 Sat 10:45 -->
+<!-- 2017-01-21 Sat 11:38 -->
 <meta  http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta  name="generator" content="Org-mode" />
 <meta  name="author" content="benrudgers" />
@@ -179,7 +179,11 @@ for the JavaScript code in this tag.
 <li><a href="#sec-9-2">9.2. Game Loop Helpers</a></li>
 </ul>
 </li>
-<li><a href="#sec-10">10. USER INTERFACE</a></li>
+<li><a href="#sec-10">10. USER INTERFACE</a>
+<ul>
+<li><a href="#sec-10-1">10.1. Text representations of boards</a></li>
+</ul>
+</li>
 <li><a href="#sec-11">11. AGENTS</a>
 <ul>
 <li><a href="#sec-11-1">11.1. Human Agent</a></li>
@@ -564,6 +568,10 @@ This function is a fall-through from <code>winner-p</code>.
 <div id="outline-container-sec-8" class="outline-2">
 <h2 id="sec-8"><span class="section-number-2">8</span> OPERATORS</h2>
 <div class="outline-text-2" id="text-8">
+<p>
+The environment (board) is modified by player-1 and player-2. The only modification is choosing a square. The mechanics of player choice could be parameterized.
+</p>
+
 <div class="org-src-container">
 
 <pre class="src src-emacs-lisp" id="players-choose-squares">(defun player-1-choose-square (board)
@@ -610,7 +618,11 @@ This function is a fall-through from <code>winner-p</code>.
 <div id="outline-container-sec-9" class="outline-2">
 <h2 id="sec-9"><span class="section-number-2">9</span> GAME LOOP</h2>
 <div class="outline-text-2" id="text-9">
-</div><div id="outline-container-sec-9-1" class="outline-3">
+<p>
+Game play is lacking due to limited integration with the Emacs platform.
+</p>
+</div>
+<div id="outline-container-sec-9-1" class="outline-3">
 <h3 id="sec-9-1"><span class="section-number-3">9.1</span> Main Loop</h3>
 <div class="outline-text-3" id="text-9-1">
 <p>
@@ -641,6 +653,7 @@ The main loop recurses and mutates a list. Copy semantics seemed like a bit of y
 <div class="org-src-container">
 
 <pre class="src src-emacs-lisp" id="setup-game">(defun setup ()
+  "Setup() configures emacs for gameplay"
   (get-buffer-create "tictactoe")
   (set-buffer "tictactoe"))
 </pre>
@@ -649,6 +662,7 @@ The main loop recurses and mutates a list. Copy semantics seemed like a bit of y
 <div class="org-src-container">
 
 <pre class="src src-emacs-lisp" id="start-game">(defun tictactoe-play ()
+  "This is a wrapper around tictactoep-main."
   (let ((game-outcome (tictactoe-main (make-empty-board))))
     (cond
      ((eq game-outcome 'player-1-wins)
@@ -667,9 +681,16 @@ The main loop recurses and mutates a list. Copy semantics seemed like a bit of y
 <div id="outline-container-sec-10" class="outline-2">
 <h2 id="sec-10"><span class="section-number-2">10</span> USER INTERFACE</h2>
 <div class="outline-text-2" id="text-10">
+<p>
+Given the game-play mechanics are a kludge this is a work in progress.
+</p>
+</div>
+<div id="outline-container-sec-10-1" class="outline-3">
+<h3 id="sec-10-1"><span class="section-number-3">10.1</span> Text representations of boards</h3>
+<div class="outline-text-3" id="text-10-1">
 <div class="org-src-container">
 
-<pre class="src src-emacs-lisp" id="user-inteface">(defun square-&gt;text (square index)
+<pre class="src src-emacs-lisp" id="boards-to-text">(defun square-&gt;text (square index)
   "Utility function. Converts a square to the correct text value."
   (cond
    ((eq square -1) " o ")
@@ -701,6 +722,7 @@ The main loop recurses and mutates a list. Copy semantics seemed like a bit of y
     (insert row3)
     (insert "\n\n")))
 </pre>
+</div>
 </div>
 </div>
 </div>
@@ -847,7 +869,7 @@ A simple reflex agent matches precepts (here a board) against a set of rules. Th
 <h3 id="sec-11-5"><span class="section-number-3">11.5</span> Agent Helpers</h3>
 <div class="outline-text-3" id="text-11-5">
 <p>
-These helpers are generally useful to any agent for tictactoe.
+These helpers are generally useful to any classically designed intelligent agent for tictactoe. Or at least one that uses a some form of search.
 </p>
 
 <div class="org-src-container">
@@ -879,7 +901,7 @@ These helpers are generally useful to any agent for tictactoe.
 </div>
 <div id="postamble" class="status">
 <p class="author">Author: benrudgers</p>
-<p class="date">Created: 2017-01-21 Sat 10:45</p>
+<p class="date">Created: 2017-01-21 Sat 11:38</p>
 <p class="creator"><a href="http://www.gnu.org/software/emacs/">Emacs</a> 24.5.1 (<a href="http://orgmode.org">Org</a> mode 8.2.10)</p>
 <p class="validation"><a href="http://validator.w3.org/check?uri=referer">Validate</a></p>
 </div>

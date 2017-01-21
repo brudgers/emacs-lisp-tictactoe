@@ -266,6 +266,7 @@ This function is a fall-through from ~winner-p~.
 #+END_SRC
 
 * OPERATORS
+The environment (board) is modified by player-1 and player-2. The only modification is choosing a square. The mechanics of player choice could be parameterized.
 
 #+NAME: players-choose-squares
 #+BEGIN_SRC emacs-lisp :exports code :tangle yes
@@ -308,6 +309,7 @@ This function is a fall-through from ~winner-p~.
 #+END_SRC
 
 * GAME LOOP
+Game play is lacking due to limited integration with the Emacs platform.
 ** Main Loop
 The main loop recurses and mutates a list. Copy semantics seemed like a bit of yak-shaving since the board only lives inside the loop. Philosophically, the idea that it is always the same board and the idea that it might be possible to cheat given enough effort and will also seem consistent with the idea of a game.
 
@@ -333,6 +335,7 @@ The main loop recurses and mutates a list. Copy semantics seemed like a bit of y
 #+NAME: setup-game
 #+BEGIN_SRC emacs-lisp :exports code :tangle yes
   (defun setup ()
+    "Setup() configures emacs for gameplay"
     (get-buffer-create "tictactoe")
     (set-buffer "tictactoe"))
 
@@ -342,6 +345,7 @@ The main loop recurses and mutates a list. Copy semantics seemed like a bit of y
 #+BEGIN_SRC emacs-lisp :exports code :tangle yes
 
   (defun tictactoe-play ()
+    "This is a wrapper around tictactoep-main."
     (let ((game-outcome (tictactoe-main (make-empty-board))))
       (cond
        ((eq game-outcome 'player-1-wins)
@@ -355,7 +359,9 @@ The main loop recurses and mutates a list. Copy semantics seemed like a bit of y
 #+END_SRC
 
 * USER INTERFACE
-#+NAME: user-inteface
+Given the game-play mechanics are a kludge this is a work in progress.
+** Text representations of boards
+#+NAME: boards-to-text
 #+BEGIN_SRC emacs-lisp :exports code :tangle yes
 
   (defun square->text (square index)
@@ -501,7 +507,7 @@ A simple reflex agent matches precepts (here a board) against a set of rules. Th
 #+END_SRC
 
 ** Agent Helpers
-These helpers are generally useful to any agent for tictactoe.
+These helpers are generally useful to any classically designed intelligent agent for tictactoe. Or at least one that uses a some form of search.
 
 #+NAME: agent-helpers
 #+BEGIN_SRC emacs-lisp :exports code :tangle yes
