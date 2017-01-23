@@ -4,7 +4,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
 <title>tictactoe.org</title>
-<!-- 2017-01-21 Sat 11:38 -->
+<!-- 2017-01-23 Mon 15:18 -->
 <meta  http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta  name="generator" content="Org-mode" />
 <meta  name="author" content="benrudgers" />
@@ -662,7 +662,8 @@ The main loop recurses and mutates a list. Copy semantics seemed like a bit of y
 <div class="org-src-container">
 
 <pre class="src src-emacs-lisp" id="start-game">(defun tictactoe-play ()
-  "This is a wrapper around tictactoep-main."
+  "This is an interactive command wrapper around tictactoe-main."
+  (interactive nil)
   (let ((game-outcome (tictactoe-main (make-empty-board))))
     (cond
      ((eq game-outcome 'player-1-wins)
@@ -752,8 +753,8 @@ A precept is a board. An Action is a square."
          (message (concat "Player-1 choose square: "
                           (prin1-to-string empty-squares)
                           " : "))
-         (choice (read-string message))))
-    (string-to-number choice))
+         (choice (read-string message)))
+       (string-to-number choice)))
 </pre>
 </div>
 </div>
@@ -901,7 +902,7 @@ These helpers are generally useful to any classically designed intelligent agent
 </div>
 <div id="postamble" class="status">
 <p class="author">Author: benrudgers</p>
-<p class="date">Created: 2017-01-21 Sat 11:38</p>
+<p class="date">Created: 2017-01-23 Mon 15:18</p>
 <p class="creator"><a href="http://www.gnu.org/software/emacs/">Emacs</a> 24.5.1 (<a href="http://orgmode.org">Org</a> mode 8.2.10)</p>
 <p class="validation"><a href="http://validator.w3.org/check?uri=referer">Validate</a></p>
 </div>

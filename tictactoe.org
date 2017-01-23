@@ -345,7 +345,8 @@ The main loop recurses and mutates a list. Copy semantics seemed like a bit of y
 #+BEGIN_SRC emacs-lisp :exports code :tangle yes
 
   (defun tictactoe-play ()
-    "This is a wrapper around tictactoep-main."
+    "This is an interactive command wrapper around tictactoe-main."
+    (interactive nil)
     (let ((game-outcome (tictactoe-main (make-empty-board))))
       (cond
        ((eq game-outcome 'player-1-wins)
@@ -416,8 +417,8 @@ The early (embedded) version of this code used ~(read choice)~ which creates a "
            (message (concat "Player-1 choose square: "
                             (prin1-to-string empty-squares)
                             " : "))
-           (choice (read-string message))))
-      (string-to-number choice))
+           (choice (read-string message)))
+         (string-to-number choice)))
 
 #+END_SRC
 

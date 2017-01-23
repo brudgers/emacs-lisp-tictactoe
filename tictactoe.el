@@ -140,21 +140,14 @@ Board -> List(List : Squares)
 (defun player-1-choose-square (board)
   "Board -> Board"
   (insert "Status: It is Player-1's turn\n")
-  (let* ((empty-squares (find-empty-squares board))
-         (message (concat "Player-1 choose square: "
-                          (prin1-to-string empty-squares)
-                          " : "))
-         (choice (read-string message)))
-    (setf (nth (read choice) board) player-1-square))
+  (setf (nth (ttt:human-agent board) board) player-1-square)
   board)
 
 (defun player-2-choose-square (board)
   "Board -> Board"
   (insert "Status: It is Player-2's turn\n")
-  (let ((empty-squares (find-empty-squares board)))
-    (setf
-     (nth (ttt:simple-reflex-agent board) board)
-     player-2-square))
+  (setf (nth (ttt:simple-reflex-agent board) board)
+        player-2-square)
   board)
 
 (defun find-empty-squares (board)
@@ -185,10 +178,13 @@ Board -> List(List : Squares)
         (tictactoe-main (player-2-choose-square board)))))))
 
 (defun setup ()
+  "Setup() configures emacs for gameplay"
   (get-buffer-create "tictactoe")
   (set-buffer "tictactoe"))
 
 (defun tictactoe-play ()
+  "This is an interactive command wrapper around tictactoe-main."
+  (interactive nil)
   (let ((game-outcome (tictactoe-main (make-empty-board))))
     (cond
      ((eq game-outcome 'player-1-wins)
@@ -231,7 +227,32 @@ Board -> List(List : Squares)
     (insert row3)
     (insert "\n\n")))
 
-(defun ttt:simple-reflex-agent (board)
+(defun ttt:human-agent (precept)
+"Precept -> Action
+A precept is a board. An Action is a square."
+    (let*
+        ((empty-squares (find-empty-squares precept))
+         (message (concat "Player-1 choose square: "
+                          (prin1-to-string empty-squares)
+                          " : "))
+         (choice (read-string message)))
+       (string-to-number choice)))
+
+(defun ttt:greedy-agent (precept)
+"Precept -> Action
+A precept is a board. An Action is a square."
+    (let*
+        ((empty-squares (find-empty-squares precept)))
+      (first empty-squares)))
+
+(defun ttt:random-agent (precept)
+"Precept -> Action
+A precept is a board. An Action is a square."
+    (let*
+        ((empty-squares (find-empty-squares precept)))
+      (nth (random (length empty-squares) empty-squares))))
+
+(defun ttt:simple-reflex-agent (precept)
 "precept -> action
  A precept is a board.
  An action is the label of a square.
@@ -239,13 +260,13 @@ Board -> List(List : Squares)
  The agent prefers blocking squares over other squares. 
  The agent prefers the center square over other squares.
  The agent prefers corner squares over other squares."
-  (let* ((precept (find-empty-squares board))
+  (let* ((options (find-empty-squares precept))
          (*player* player-2)
          (*other-player* player-1)
          (*player-square* player-2-square)
          (*other-player-square* player-1-square)
-         (expansion (expand board precept *player-square*))
-         (winner (find-winner expansion precept *player*))
+         (expansion (expand precept options *player-square*))
+         (winner (find-winner expansion options *player*))
          (center 4)
          (corner0 0)
          (corner2 2)
@@ -254,20 +275,20 @@ Board -> List(List : Squares)
     (if winner
         winner
       (let*
-          ((other-expansion (expand board
-                                    precept
+          ((other-expansion (expand precept
+                                    options
                                     *other-player-square*))
            (block (find-winner other-expansion
-                               precept
+                               options
                                *other-player*)))
         (cond
          (block block)
-         ((memq center precept) center)
-         ((memq corner0 precept) corner0)
-         ((memq corner2 precept) corner2)
-         ((memq corner6 precept) corner6)
-         ((memq corner8 precept) corner8)
-         (t (first precept)))))))
+         ((memq center options) center)
+         ((memq corner0 options) corner0)
+         ((memq corner2 options) corner2)
+         ((memq corner6 options) corner6)
+         ((memq corner8 options) corner8)
+         (t (first options)))))))
 
 (defun expand (board empty-squares player-square)
   (let ((new-board  (copy-list board)))
