@@ -12,6 +12,29 @@ Originally, this code was developed as part of the interview process for the Spr
 My 'what will you work on' proposal was to work through Norvig's *Paradigms of Artificial Intelligence: case studies in Common Lisp* with the goal of learning 'classic' AI at the agent level (in contrast to studying lower abstraction layer implementation mechanisms such as deep neural networks). TicTacToe seemed to fit into that program of study more thouroughly than the other alternatives, i.e. the interview part of the exercise was to pair program on addding a feature so that the program could play.
 
 Emacs (alongside JavaScript and Linux) has been a specific focus for my technical interest since the beginning of 2016. Emacs Lisp was chosen as the implemenation language as part of that ongoing project and with an eye toward the possibility that via Emacs Lisp, Emacs might make a good prototyping environment for 'classic' AI agents given the relationship of 'classic' AI to Lisp.
+** Make the files
+1. The output for this file is =tictactoe.el=.
+2. The web page for this file is =docs/index.html=. It is structured to work with Github pages.
+3. To generate these files, navigate into the source block and use =M-x org-babel-execute-src-block=. 
+#+NAME: generate-files
+#+BEGIN_SRC elisp
+  ;; generate tictactoe.el
+  (org-babel-tangle)
+  ;; generate docs/index.html
+  (org-html-export-as-html)
+  (save-current-buffer
+    (set-buffer "*Org HTML Export*")
+    (write-file "docs/index.html")
+    (kill-buffer))
+  (concat "Files Generated: " (current-time-string))
+#+END_SRC
+
+#+RESULTS: generate-files
+: Files Generated: Mon Jan 23 19:44:48 2017
+
+#+RESULTS:
+: Files Generated: Mon Jan 23 19:21:58 2017
+
 * INTRODUCTION
 ** INSTRUCTIONS
 1.  Open this file in Emacs
